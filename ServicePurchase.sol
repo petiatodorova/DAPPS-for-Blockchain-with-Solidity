@@ -53,6 +53,8 @@ contract ServicePurchase {
 
         // emit an event for the payment
         emit PurchaseConfirmed(msg.sender);
+
+        timeLimit = now;
     }
 
     // withdrawal of money from the buyer,
