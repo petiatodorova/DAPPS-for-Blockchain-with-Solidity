@@ -1,0 +1,65 @@
+## Prerequisites
+You need to know how to use the command prompt and how to change your working directory and execute commands.
+You can take a look at [this tutorial](https://www.youtube.com/watch?v=MBBWVgE0ewk).
+
+## Setup
+1. Install node.js
+
+2. To install `web3` and `http-server` (allows you to host local HTML as a website), run:
+
+You may need Admin priviledges. Try to open the command prompt as an administrator.
+
+npm install -g truffle http-server
+
+3. Install web3 package in project folder
+
+npm install web3 for the newer version
+npm install web3@0.20.4 for the older version
+
+4. Running a local blockchain
+
+You need to download Ganache and run it
+
+## Connecting to the local Ethereum node via `Node.js`
+
+Not to confuse `Node.js` with your Ethereum node, they have nothing in common.
+Navigate to the project directory and run this in the console:
+
+node
+
+This will put you in an interactive `Node.js` session, where you can load the web3 API and connect to the Ethereum node.
+
+## Running the MetaMask example
+
+1. Navigate to the `metamask_example` folder in the project and run:
+node publish.js
+
+This will run a script that will publish a contract on your local blockchain and print out its address.
+
+2. Edit the `script.js` file with the new contract address
+
+3. To host the website, while inside the metamask_example folder, run:
+
+http-server
+
+
+`Ctrl + C` closes it.
+
+4. Install MetaMask in chrome
+
+5. Open MetaMask and click the "Import existing DEN"
+
+6. Copy the 12 word key that are located in Ganache.
+
+The 12 words are used to generate the Ethereum accounts that have Ether in your local blockchain. They should be:
+
+7. After you log in to MetaMask with this key, click on the upper left corner and choose "Custom RPC"  or 
+
+8. Enter the URL `http://localhost:9545/` where 9545 is the number that is configured in your Ganache Settings and click save. Go back and you should have successfully connected to your local node!
+
+9. You can also change the port in Ganache to 8545 and directly connect Metamask to `http://localhost:9545`
+
+10. Visit `127.0.0.1:8080` and use the website!
+
+## Developing DAPPs
+You can edit the website files (html and js files) directly and they will be updated when you reload the page. **If you're using chrome, reload the page with Ctrl + Shift + R instead, because chrome will cache your last version and won't update it**.
