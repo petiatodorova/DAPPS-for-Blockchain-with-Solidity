@@ -1,25 +1,25 @@
 var Web3 = require("web3");
-var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:9545"));
+var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
-var acc = web3.eth.accounts[0]; //get the first account
+// var acc = web3.eth.accounts[0]; //get the first account
 
 //Code:
 /*
 contract Ownable {
     address public owner;
-    
+
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
-    
-    
+
+
     function Ownable() public {
         owner = msg.sender;
     }
-    
+
     modifier onlyOwner() {
         require(msg.sender == owner);
         _;
     }
-    
+
     function transferOwnership(address newOwner) public onlyOwner {
         require(newOwner != address(0));
         OwnershipTransferred(owner, newOwner);
@@ -29,27 +29,88 @@ contract Ownable {
 */
 
 //Store this contract's compiled bytecode and ABI
-var abi = [{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"previousOwner","type":"address"},{"indexed":true,"name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"}]
-var bytecode = "6060604052341561000f57600080fd5b336000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055506102858061005e6000396000f30060606040526004361061004c576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680638da5cb5b14610051578063f2fde38b146100a6575b600080fd5b341561005c57600080fd5b6100646100df565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b34156100b157600080fd5b6100dd600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610104565b005b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614151561015f57600080fd5b600073ffffffffffffffffffffffffffffffffffffffff168173ffffffffffffffffffffffffffffffffffffffff161415151561019b57600080fd5b8073ffffffffffffffffffffffffffffffffffffffff166000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e060405160405180910390a3806000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550505600a165627a7a7230582081efbb72c8063d07f5609b8e41937697f7c0fefba7841d589f2b21c46afef4800029"
+var abi = [
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "previousOwner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "OwnershipTransferred",
+		"type": "event"
+	}
+]
+var bytecode = "608060405234801561001057600080fd5b5060008054600160a060020a03191633179055610173806100326000396000f30060806040526004361061004b5763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416638da5cb5b8114610050578063f2fde38b14610081575b600080fd5b34801561005c57600080fd5b506100656100a4565b60408051600160a060020a039092168252519081900360200190f35b34801561008d57600080fd5b506100a2600160a060020a03600435166100b3565b005b600054600160a060020a031681565b600054600160a060020a031633146100ca57600080fd5b600160a060020a03811615156100df57600080fd5b60008054604051600160a060020a03808516939216917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a36000805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a03929092169190911790555600a165627a7a7230582045f818dcfe4493a32044eec8a400ace93f849bb066c43ae16a137f9f432a0b050029";
 
-//create the contract instance. We can use this instance to publish or connect to a published contract
-var Contract = web3.eth.contract(abi);
+var accountsArray;
 
-//create a JS Object (key-value pairs), holding the data we need to publish our contract
+web3.eth.getAccounts(function(error, result) {
+	if(!error) {
+		accountsArray = result
+	}
+});
+
+var acc = accountsArray[0];
+
 var publishData = {
 	"from": acc, //the account from which it will be published
 	"data": bytecode,
 	"gas": 4000000 //gas limit. This should be the same or lower than Ethereum's gas limit
 }
 
-//publish the contract, passing a callback that will be called twice. Once when the transaction is sent, and once when it is mined
-//the first argument is the constructor argument
-Contract.new(publishData, function(err, contractInstance) {
-	if(!err) {
-		if(contractInstance.address) { //if the contract has an address aka if the transaction is mined
-			console.log("New contract address is :", contractInstance.address);
-		}
-	} else {
-		console.error(err); //something went wrong
-	}
+var myContract = new web3.eth.Contract(abi, null, {
+    data: bytecode
+});
+
+var contractInstance;
+
+myContract.deploy().send({
+    from: acc,
+	gasPrice: 4000000,
+	gas: 1500000,
+}).then((instance) => {
+    console.log("Contract mined at " + instance.options.address);
+    contractInstance = instance;
 });

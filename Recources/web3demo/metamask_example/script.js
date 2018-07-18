@@ -11,9 +11,61 @@ window.onload = function(){
 
 var contractInstance;
 
-var abi = [{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"previousOwner","type":"address"},{"indexed":true,"name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"}];
+var abi = [
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "previousOwner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "OwnershipTransferred",
+		"type": "event"
+	}
+];
 
-var address = "0x4e72770760c011647d4873f60a3cf6cdea896cd8";
+var address = "0xd616BeEec886ff1eA2Fef95ABE1b97a1177A7423";
 var acc;
 
 function init(){
@@ -34,7 +86,7 @@ function displayMessage(message){
 
 function getTextInput(){
 	var el = document.getElementById("input");
-	
+
 	return el.value;
 }
 
@@ -53,7 +105,7 @@ function onButtonPressed(){
 }
 
 function onSecondButtonPressed(){
-	updateAccount();	
+	updateAccount();
 
 	contractInstance.owner.call({"from": acc}, function(err, res) {
 		if(!err){
