@@ -257,7 +257,7 @@ contract Marketplace is Ownable {
     }
 
     // fallback function
-    function() private payable {
+    function() public payable {
        emit SenderLogger(msg.sender);
     }
 }
